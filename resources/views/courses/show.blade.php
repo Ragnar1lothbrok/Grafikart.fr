@@ -3,7 +3,7 @@
 @section('title', sprintf('%s, Tutoriel video %s', $course->title, $course->mainTechnologies->pluck('name')->join(' & ')))
 
 @section('head')
-    <meta property="og:image" content="{{ $course->youtubeThumbnail }}"/>
+    <meta property="og:image" content="{{ $course->posterUrl(1330, 750) }}"/>
     <meta property="og:created_time" content="{{ $course->created_at->toIso8601String() }}"/>
     <meta property="og:type" content="video.other"/>
     <meta property="og:duration" content="{{ $course->duration }}"/>
