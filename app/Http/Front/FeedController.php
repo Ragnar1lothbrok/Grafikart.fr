@@ -19,10 +19,10 @@ class FeedController extends Controller
     public function index(): Response
     {
         $fields = ['slug', 'id', 'title', 'content', 'created_at'];
-        $courses = Course::published()->select($fields)->latest()->limit(10)->get();
+        $courses = Course::published()->whereNowOrPast('created_at')->select($fields)->latest()->limit(10)->get();
         // posts & formations are less frequent than courses
-        $posts = Post::published()->select($fields)->latest()->limit(3)->get();
-        $formations = Formation::published()->select($fields)->latest()->limit(3)->get();
+        $posts = Post::published()->whereNowOrPast('created_at')->select($fields)->latest()->limit(3)->get();
+        $formations = Formation::published()->whereNowOrPast('created_at')->select($fields)->latest()->limit(3)->get();
 
         // Merge the collection to get the latest published content
         $items = $courses->concat($posts)->concat($formations)
