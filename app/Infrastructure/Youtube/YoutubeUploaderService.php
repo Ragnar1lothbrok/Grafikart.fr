@@ -32,7 +32,7 @@ class YoutubeUploaderService implements ShouldQueue
         $youtube = new \Google_Service_YouTube($googleClient);
         $youtubeId = $course->youtube_id;
         $video = $this->youtubeVideo($course);
-        $parts = 'snippet,status,monetizationDetails';
+        $parts = 'snippet,status';
         if ($youtubeId) {
             $video = $youtube->videos->update($parts, $video);
         } else {
@@ -77,13 +77,6 @@ class YoutubeUploaderService implements ShouldQueue
             $status->setPrivacyStatus(\Google_Service_YouTube_VideoStatus::PRIVACY_STATUS_public);
         }
         $video->setStatus($status);
-
-        // Enable Monetization
-        $monetizationDetails = new \Google_Service_YouTube_VideoMonetizationDetails;
-        $monetizationAccess = new \Google_Service_YouTube_AccessPolicy;
-        $monetizationAccess->setAllowed(true);
-        $monetizationDetails->setAccess($monetizationAccess);
-        $video->setMonetizationDetails($monetizationDetails);
 
         if ($youtubeId) {
             $video->setId($youtubeId);
