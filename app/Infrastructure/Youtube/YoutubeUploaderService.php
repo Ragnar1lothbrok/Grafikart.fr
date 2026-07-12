@@ -32,7 +32,7 @@ class YoutubeUploaderService implements ShouldQueue
         $youtube = new \Google_Service_YouTube($googleClient);
         $youtubeId = $course->youtube_id;
         $video = $this->youtubeVideo($course);
-        $parts = 'snippet,status';
+        $parts = 'snippet,status,monetizationDetails';
         if ($youtubeId) {
             $video = $youtube->videos->update($parts, $video);
         } else {
@@ -64,17 +64,27 @@ class YoutubeUploaderService implements ShouldQueue
         $snippet->setDefaultAudioLanguage('fr');
         $snippet->setDefaultLanguage('fr');
         $video->setSnippet($snippet);
+
+        // Visibility
         $status = new \Google_Service_YouTube_VideoStatus;
         $status->setEmbeddable(true);
         $status->setPublicStatsViewable(false);
         $status->setSelfDeclaredMadeForKids(false);
         if ($course->created_at->isFuture()) {
-            $status->setPrivacyStatus('private');
+            $status->setPrivacyStatus(\Google_Service_YouTube_VideoStatus::PRIVACY_STATUS_private);
             $status->setPublishAt($course->created_at->toIso8601String());
         } else {
-            $status->setPrivacyStatus('public');
+            $status->setPrivacyStatus(\Google_Service_YouTube_VideoStatus::PRIVACY_STATUS_public);
         }
         $video->setStatus($status);
+
+        // Enable Monetization
+        $monetizationDetails = new \Google_Service_YouTube_VideoMonetizationDetails;
+        $monetizationAccess = new \Google_Service_YouTube_AccessPolicy;
+        $monetizationAccess->setAllowed(true);
+        $monetizationDetails->setAccess($monetizationAccess);
+        $video->setMonetizationDetails($monetizationDetails);
+
         if ($youtubeId) {
             $video->setId($youtubeId);
         }
