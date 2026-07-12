@@ -81,6 +81,7 @@ const langs = {
   pot: () => import("@shikijs/langs/pot"),
   potx: () => import("@shikijs/langs/potx"),
   powershell: () => import("@shikijs/langs/powershell"),
+  proto: () => import("@shikijs/langs/proto"),
   py: () => import("@shikijs/langs/py"),
   python: () => import("@shikijs/langs/python"),
   regex: () => import("@shikijs/langs/regex"),
